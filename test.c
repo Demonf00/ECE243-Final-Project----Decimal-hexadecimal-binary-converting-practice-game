@@ -67,7 +67,7 @@ int main(void)
         for (int j = 0; j < 14; ++j)
         {
             for (i = interval[index]; i < interval[index + 1]; ++i)
-                fprintf(fp, "%d ", numbers[j][i]);
+                fprintf(fp, "%d, ", numbers[j][i]);
             fprintf(fp, "\n");
         }
         index++;
