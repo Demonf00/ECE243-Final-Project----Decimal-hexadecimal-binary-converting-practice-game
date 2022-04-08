@@ -111,6 +111,7 @@ int main(void)
 
     while (1)
     {
+        int finishDrawing = 0;
         /* Erase any boxes and lines that were drawn in the last iteration */
         if (flag == 1)
         {
@@ -158,10 +159,12 @@ int main(void)
             points[i][0] += directions[i][0];
             points[i][1] += directions[i][1];
         }
-
-        
-        wait_for_vsync(); // swap front and back buffers on VGA vertical sync
-        pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
+        finishDrawing = 1;
+        if (finishDrawing)
+        {
+            wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+            pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
+        }
     }
 }
 
