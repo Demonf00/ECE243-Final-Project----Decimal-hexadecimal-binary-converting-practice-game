@@ -51,3 +51,6 @@ short one[12][12] = {
 short one[12][12] = {
 
 };
+
+short x[10] = {14, };
+short y[10] = {9, };
