@@ -14,6 +14,7 @@
 #define PIXEL_BUF_CTRL_BASE   0xFF203020
 #define CHAR_BUF_CTRL_BASE    0xFF203030
 #define PS_PORT_BASE          0xFF200100
+#define A9_PRI_COUNTER_BASE   0xFFFEC600
 
 
 /* VGA colors */
@@ -1467,6 +1468,7 @@ int main(void)
     volatile int * pixel_ctrl_ptr = (int *)PIXEL_BUF_CTRL_BASE;
     volatile int * led_ptr = (int *)LEDR_BASE;
     volatile int * PS2_ptr = (int *)PS_PORT_BASE;
+    volatile int * counter_ptr = (int *)A9_PRI_COUNTER_BASE;
     int PS2_data, RVALID;
     char byte1 = 0, byte2 = 0, byte3 = 0;
     
@@ -1498,9 +1500,18 @@ int main(void)
 
     wait_for_vsync(); // swap front and back buffers on VGA vertical sync
     pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
+    *counter_ptr = 200000000;
+    *(counter_ptr + 1) = 200000000;
+    
+    char counterInter = 0;
+    char countInter = 0;
+    int time = 60;
+    int cax, cay;
 
     while(TRUE)
     {
+        
+
         PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
         RVALID = PS2_data & 0x8000; // extract the RVALID field
         if (RVALID)
@@ -1539,6 +1550,10 @@ int main(void)
     wait_for_vsync(); // swap front and back buffers on VGA vertical sync
     pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
 
+    for (x = 0; x < 320; x++)
+        for (y = 0; y < 240; y++)
+            plot_pixel (x, y, level[y][x]);
+
     int xax, yay;
     int tax, tay;
 
@@ -1548,10 +1563,398 @@ int main(void)
     tax = 50;
     tay = 100;
 
+    cax = 100;
+    cay = 150;
+
+    int r = rand()%65536;
+    int requ = r;
+    int quest[5] = {0};
+    quest[0] = r / 10000;
+    r -= quest[0] * 10000;
+    quest[1] = r / 1000;
+    r -= quest[1] * 1000;
+    quest[2] = r / 100;
+    r -= quest[2] * 100;
+    quest[3] = r / 10;
+    r -= quest[3] * 10;
+    quest[4] = r;
+    int timer[2] = {0};
+    timer[0] = time/10;
+    timer[1] = time%10;
+
+    int i, j;
+    wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+    pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
+    for (j = 0; j < 5; ++j)
+    {
+        i = quest[j];
+
+
+                        if (i == 0)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, zero[y - tay][x - tax]);
+                        
+                        else if (i == 1)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, one[y - tay][x - tax]);
+
+                        else if (i == 2)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, two[y - tay][x - tax]);
+
+                        else if (i == 3)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, three[y - tay][x - tax]);
+                        
+                        else if (i == 4)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, four[y - tay][x - tax]);
+
+                        else if (i == 5)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, five[y - tay][x - tax]);
+
+                        else if (i == 6)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, six[y - tay][x - tax]);
+
+
+                        else if (i == 7)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, seven[y - tay][x - tax]);
+
+                        else if (i == 8)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, eight[y - tay][x - tax]);
+
+
+                        else if (i == 9)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, nine[y - tay][x - tax]);
+
+                        // wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+                        // pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
+                        tax += width[i];
+                        for (y = tay; y < tay + height[i]; y++)
+                            plot_pixel (tax, y, WHITE);
+                        tax += 1;
+                        
+    }
+
+    tax = 50;
+    tay = 100;
+    
+    for (j = 0; j < 2; ++j)
+    {
+        i = timer[j];
+
+
+                        if (i == 0)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, zero[y - cay][x - cax]);
+                        
+                        else if (i == 1)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, one[y - cay][x - cax]);
+
+                        else if (i == 2)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, two[y - cay][x - cax]);
+
+                        else if (i == 3)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, three[y - cay][x - cax]);
+                        
+                        else if (i == 4)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, four[y - cay][x - cax]);
+
+                        else if (i == 5)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, five[y - cay][x - cax]);
+
+                        else if (i == 6)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, six[y - cay][x - cax]);
+
+
+                        else if (i == 7)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, seven[y - cay][x - cax]);
+
+                        else if (i == 8)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, eight[y - cay][x - cax]);
+
+
+                        else if (i == 9)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, nine[y - cay][x - cax]);
+
+                        // wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+                        // pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
+                        cax += width[i];
+                        for (y = cay; y < cay + height[i]; y++)
+                            plot_pixel (cax, y, WHITE);
+                        cax += 1;
+                        
+                        
+
+    }
+
+    cax = 100;
+    cay = 150;
+
+    wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+                        pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
+
+        for (j = 0; j < 5; ++j)
+    {
+        i = quest[j];
+
+
+                        if (i == 0)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, zero[y - tay][x - tax]);
+                        
+                        else if (i == 1)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, one[y - tay][x - tax]);
+
+                        else if (i == 2)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, two[y - tay][x - tax]);
+
+                        else if (i == 3)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, three[y - tay][x - tax]);
+                        
+                        else if (i == 4)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, four[y - tay][x - tax]);
+
+                        else if (i == 5)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, five[y - tay][x - tax]);
+
+                        else if (i == 6)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, six[y - tay][x - tax]);
+
+
+                        else if (i == 7)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, seven[y - tay][x - tax]);
+
+                        else if (i == 8)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, eight[y - tay][x - tax]);
+
+
+                        else if (i == 9)
+                            for (x = tax; x < tax + width[i]; x++)
+                                for (y = tay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, nine[y - tay][x - tax]);
+
+                        // wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+                        // pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
+                        tax += width[i];
+                        for (y = tay; y < tay + height[i]; y++)
+                            plot_pixel (tax, y, WHITE);
+                        tax += 1;
+                        
+    }
+
+    tax = 50;
+    tay = 100;
+    
+    for (j = 0; j < 2; ++j)
+    {
+        i = timer[j];
+
+
+                        if (i == 0)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < tay + height[i]; y++)
+                                    plot_pixel (x, y, zero[y - cay][x - cax]);
+                        
+                        else if (i == 1)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, one[y - cay][x - cax]);
+
+                        else if (i == 2)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, two[y - cay][x - cax]);
+
+                        else if (i == 3)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, three[y - cay][x - cax]);
+                        
+                        else if (i == 4)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, four[y - cay][x - cax]);
+
+                        else if (i == 5)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, five[y - cay][x - cax]);
+
+                        else if (i == 6)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, six[y - cay][x - cax]);
+
+
+                        else if (i == 7)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, seven[y - cay][x - cax]);
+
+                        else if (i == 8)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, eight[y - cay][x - cax]);
+
+
+                        else if (i == 9)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, nine[y - cay][x - cax]);
+
+                        // wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+                        // pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
+                        cax += width[i];
+                        for (y = cay; y < cay + height[i]; y++)
+                            plot_pixel (cax, y, WHITE);
+                        cax += 1;
+                        
+                        
+
+    }
+
     int word[10] = {0};
     int count = 0;
+
+
+    *(char*)(counter_ptr + 2) = 3;
     while (TRUE)
     {
+        
+        counterInter = *(counter_ptr + 3);
+        countInter = counterInter & 0x1;
+        if (counterInter && time >= 0)
+        {
+            cax = 100;
+            cay = 150;
+            time--;
+            *led_ptr = time;
+            timer[0] = time/10;
+    timer[1] = time%10;
+    for (j = 0; j < 2; ++j)
+    {
+        i = timer[j];
+
+
+                        if (i == 0)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, zero[y - cay][x - cax]);
+                        
+                        else if (i == 1)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, one[y - cay][x - cax]);
+
+                        else if (i == 2)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, two[y - cay][x - cax]);
+
+                        else if (i == 3)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, three[y - cay][x - cax]);
+                        
+                        else if (i == 4)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, four[y - cay][x - cax]);
+
+                        else if (i == 5)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, five[y - cay][x - cax]);
+
+                        else if (i == 6)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, six[y - cay][x - cax]);
+
+
+                        else if (i == 7)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, seven[y - cay][x - cax]);
+
+                        else if (i == 8)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, eight[y - cay][x - cax]);
+
+
+                        else if (i == 9)
+                            for (x = cax; x < cax + width[i]; x++)
+                                for (y = cay; y < cay + height[i]; y++)
+                                    plot_pixel (x, y, nine[y - cay][x - cax]);
+
+                        // wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+                        // pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
+                        cax += width[i];
+                        for (y = cay; y < cay + height[i]; y++)
+                            plot_pixel (cax, y, WHITE);
+                        cax += 1;
+                        
+                        
+
+    }
+    wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+                        pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
+            *(counter_ptr + 3) = 1;
+        }
+
         PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
         RVALID = PS2_data & 0x8000; // extract the RVALID field
         if (RVALID)
@@ -1565,7 +1968,7 @@ int main(void)
                 int sum = 0;
                 for (int i = 0; i < count; ++i)
                     sum += word[i] * pow(10, count - i - 1);
-                if (sum == 5500)
+                if (sum == requ)
                 {
                     for (x = 0; x < 320; x++)
                     for (y = 0; y < 240; y++)
@@ -1589,70 +1992,15 @@ int main(void)
                     for (x = xax - 1; x >= xax - width[i]; x--)
                         for (y = yay; y < yay + height[i]; y++)
                             plot_pixel (x, y, WHITE);
-                    xax -= width[i];
-                
-                // if (i == 0)
-                //     for (x = xax - 1; x >= xax - 1 + width[i]; x--)
-                //         for (y = yay; y < yay + height[i]; y++)
-                //             plot_pixel (x, y, WHITE);
-                        
-                // else if (i == 1)
-                //     for (x = xax; x < xax + width[i]; x++)
-                //         for (y = yay; y < yay + height[i]; y++)
-                //             plot_pixel (x, y, one[y - yay][x - xax]);
-
-                // else if (i == 2)
-                //     for (x = xax; x < xax + width[i]; x++)
-                //         for (y = yay; y < yay + height[i]; y++)
-                //             plot_pixel (x, y, two[y - yay][x - xax]);
-
-                // else if (i == 3)
-                //     for (x = xax; x < xax + width[i]; x++)
-                //         for (y = yay; y < yay + height[i]; y++)
-                //             plot_pixel (x, y, three[y - yay][x - xax]);
-                        
-                // else if (i == 4)
-                //     for (x = xax; x < xax + width[i]; x++)
-                //         for (y = yay; y < yay + height[i]; y++)
-                //             plot_pixel (x, y, four[y - yay][x - xax]);
-
-                // else if (i == 5)
-                //     for (x = xax; x < xax + width[i]; x++)
-                //         for (y = yay; y < yay + height[i]; y++)
-                //             plot_pixel (x, y, five[y - yay][x - xax]);
-
-                // else if (i == 6)
-                //     for (x = xax; x < xax + width[i]; x++)
-                //         for (y = yay; y < yay + height[i]; y++)
-                //             // plot_pixel (x, y, BLUE);
-                //             plot_pixel (x, y, six[y - yay][x - xax]);
-
-
-                // else if (i == 7)
-                //     for (x = xax; x < xax + width[i]; x++)
-                //         for (y = yay; y < yay + height[i]; y++)
-                //             plot_pixel (x, y, seven[y - yay][x - xax]);
-
-                // else if (i == 8)
-                //     for (x = xax; x < xax + width[i]; x++)
-                //         for (y = yay; y < yay + height[i]; y++)
-                //             plot_pixel (x, y, eight[y - yay][x - xax]);
-
-
-                // else if (i == 9)
-                //     for (x = xax; x < xax + width[i]; x++)
-                //         for (y = yay; y < yay + height[i]; y++)
-                //             plot_pixel (x, y, nine[y - yay][x - xax]);
-
-                // // wait_for_vsync(); // swap front and back buffers on VGA vertical sync
-                // // pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
-                // xax += width[i];
-                // for (y = yay; y < yay + height[i]; y++)
-                //     plot_pixel (xax, y, WHITE);
-                // xax += 1;
+                    // xax -= width[i];
                         
                     wait_for_vsync(); // swap front and back buffers on VGA vertical sync
                     pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
+
+                    for (x = xax - 1; x >= xax - width[i]; x--)
+                        for (y = yay; y < yay + height[i]; y++)
+                            plot_pixel (x, y, WHITE);
+                    xax -= width[i];
                 }
             }
 
@@ -1666,9 +2014,6 @@ int main(void)
                     {
                         *led_ptr = i;
                         word[count++] = i;
-                        // for (x = xax; x < xax + 50; x++)
-                        //     for (y = yay; y < yay + 50; y++)
-                        //         plot_pixel (x, y, BLUE);
                         wait_for_vsync(); // swap front and back buffers on VGA vertical sync
                         pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
 
@@ -1730,10 +2075,71 @@ int main(void)
                         xax += width[i];
                         for (y = yay; y < yay + height[i]; y++)
                             plot_pixel (xax, y, WHITE);
-                        xax += 1;
+                        // xax += 1;
                         
                         wait_for_vsync(); // swap front and back buffers on VGA vertical sync
                         pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
+                        xax -= width[i];
+
+                                                if (i == 0)
+                            for (x = xax; x < xax + width[i]; x++)
+                                for (y = yay; y < yay + height[i]; y++)
+                                    plot_pixel (x, y, zero[y - yay][x - xax]);
+                        
+                        else if (i == 1)
+                            for (x = xax; x < xax + width[i]; x++)
+                                for (y = yay; y < yay + height[i]; y++)
+                                    plot_pixel (x, y, one[y - yay][x - xax]);
+
+                        else if (i == 2)
+                            for (x = xax; x < xax + width[i]; x++)
+                                for (y = yay; y < yay + height[i]; y++)
+                                    plot_pixel (x, y, two[y - yay][x - xax]);
+
+                        else if (i == 3)
+                            for (x = xax; x < xax + width[i]; x++)
+                                for (y = yay; y < yay + height[i]; y++)
+                                    plot_pixel (x, y, three[y - yay][x - xax]);
+                        
+                        else if (i == 4)
+                            for (x = xax; x < xax + width[i]; x++)
+                                for (y = yay; y < yay + height[i]; y++)
+                                    plot_pixel (x, y, four[y - yay][x - xax]);
+
+                        else if (i == 5)
+                            for (x = xax; x < xax + width[i]; x++)
+                                for (y = yay; y < yay + height[i]; y++)
+                                    plot_pixel (x, y, five[y - yay][x - xax]);
+
+                        else if (i == 6)
+                            for (x = xax; x < xax + width[i]; x++)
+                                for (y = yay; y < yay + height[i]; y++)
+                                    // plot_pixel (x, y, BLUE);
+                                    plot_pixel (x, y, six[y - yay][x - xax]);
+
+
+                        else if (i == 7)
+                            for (x = xax; x < xax + width[i]; x++)
+                                for (y = yay; y < yay + height[i]; y++)
+                                    plot_pixel (x, y, seven[y - yay][x - xax]);
+
+                        else if (i == 8)
+                            for (x = xax; x < xax + width[i]; x++)
+                                for (y = yay; y < yay + height[i]; y++)
+                                    plot_pixel (x, y, eight[y - yay][x - xax]);
+
+
+                        else if (i == 9)
+                            for (x = xax; x < xax + width[i]; x++)
+                                for (y = yay; y < yay + height[i]; y++)
+                                    plot_pixel (x, y, nine[y - yay][x - xax]);
+
+                        // wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+                        // pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer 
+                        xax += width[i];
+                        for (y = yay; y < yay + height[i]; y++)
+                            plot_pixel (xax, y, WHITE);
+                        xax += 1;
                         break;
                     }
                 }
