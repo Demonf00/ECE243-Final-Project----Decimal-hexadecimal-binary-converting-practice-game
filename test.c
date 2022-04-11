@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<math.h>
 
 
 
@@ -24,8 +25,8 @@ const char number[10][20] = {"zero.txt", "one.txt", "two.txt", "three.txt", "fou
 
 int main(void)
 {
-    int interval[20] = {0, 9, 20, 31, 41, 53, 63, 74, 85, 96, 106};
-    int index = 0;
+    // int interval[20] = {0, 9, 20, 31, 41, 53, 63, 74, 85, 96, 106};
+    // int index = 0;
     
     // for (int i = 0; i < 117; ++i)
     // {
@@ -60,18 +61,20 @@ int main(void)
     // fprintf(fp, "\n");
     int i;
 
-    while(index < 11)
-    {
-        FILE * fp = fopen(number[index], "w");
+    for (int i = 15; i >= 0; --i)
+        printf("biquest[%d] = r / %d;\nr -= biquest[%d] * %d;\n", 15 - i, (int)pow(2, i), 15-i, (int)pow(2, i));
+    // while(index < 11)
+    // {
+    //     FILE * fp = fopen(number[index], "w");
         
-        for (int j = 0; j < 14; ++j)
-        {
-            for (i = interval[index]; i < interval[index + 1]; ++i)
-                fprintf(fp, "%d, ", numbers[j][i]);
-            fprintf(fp, "\n");
-        }
-        index++;
-        fclose(fp);
-    }
+    //     for (int j = 0; j < 14; ++j)
+    //     {
+    //         for (i = interval[index]; i < interval[index + 1]; ++i)
+    //             fprintf(fp, "%d, ", numbers[j][i]);
+    //         fprintf(fp, "\n");
+    //     }
+    //     index++;
+    //     fclose(fp);
+    // }
     return 0;
 }
