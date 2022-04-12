@@ -2612,7 +2612,7 @@ int main(void)
     int cax, cay;
     int pax, pay;
     int numWrong;
-    int test = 0;
+    int test = 1;
     int pot[2] = {0};
     int i, j;
     int wrongQuest[12][2];
@@ -2934,7 +2934,7 @@ start:
         int count = 0;
 
 
-        *(char*)(counter_ptr + 2) = 3;
+        *(counter_ptr + 2) = 3;
         while (time >= 0)
         {
             
@@ -2989,7 +2989,7 @@ start:
                 // *led_ptr = byte3;
                 if (byte1 == 0x5A && byte2 == 0xF0 && byte3 == 0x5A)
                 {
-                    *(char*)(counter_ptr + 2) = 0;
+                    *(counter_ptr + 2) = 0;
                     int sum = 0;
                     for (int i = 0; i < count; ++i)
                         sum += word[i] * pow(10, count - i - 1);
