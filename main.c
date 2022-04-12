@@ -2940,7 +2940,7 @@ start:
             
             counterInter = *(counter_ptr + 3);
             countInter = counterInter & 0x1;
-            if (counterInter)
+            if (countInter)
             {
                 cax = 150;
                 cay = 15;
