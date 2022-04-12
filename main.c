@@ -2616,6 +2616,7 @@ int main(void)
     int pot[2] = {0};
     int i, j;
     int wrongQuest[12][2];
+    int delay = 10000000;
 	
 start:
     for (i = 0; i < 12; ++i)
@@ -3015,7 +3016,7 @@ start:
 
                         wait_for_vsync(); // swap front and back buffers on VGA vertical sync
                         pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
-                        for (int i = 0; i < 1000000; ++i);
+                        for (int i = 0; i < delay; ++i);
                         for (j = 0; j < 2; ++j)
                         {
                             i = pot[j];
@@ -3040,7 +3041,7 @@ start:
 
                         wait_for_vsync(); // swap front and back buffers on VGA vertical sync
                         pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
-                        for (int i = 0; i < 1000000; ++i);
+                        for (int i = 0; i < delay; ++i);
                         if (time <= 0)
                             break;
                         timer[0] = time/10;
